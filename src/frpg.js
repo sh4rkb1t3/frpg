@@ -16,18 +16,20 @@ const frpg = (function() {
 
     const fishInWater = {
         observer: new MutationObserver((mutationsList) => {
-            for(const mutation of mutationsList) {
+            const firstMutation = mutationsList.find((mutation) => {
                 const el = mutation.target;
 
-                if(el.style.opacity === '1' && mutation.oldValue === 'display: inline;') {
-                    const streak = toInteger(document.querySelector('.col-60 strong').textContent);
+                return el.style.opacity === '1' && mutation.oldValue === 'display: inline;';
+            });
 
-                    if(streak < 500) {
-                        return document.querySelector('.fishcaught').click();
-                    }
+            if(firstMutation) {
+                const streak = toInteger(document.querySelector('.col-60 strong').textContent);
 
-                    el.click();
+                if(streak < 500) {
+                    return document.querySelector('.fishcaught').click();
                 }
+
+                firstMutation.target.click();
             }
         }),
         nodeTarget: () => document.getElementById('fishinwater'),
@@ -50,8 +52,12 @@ const frpg = (function() {
         observer: new MutationObserver(async () => {
             const modalIn = document.querySelector('.modal.modal-in');
 
-            if(modalIn && viewMain.currentPage() === 'fishing') {
-                setTimeout(() => modalIn.querySelector('.modal-button').click(), 500);
+            if(
+                modalIn
+                && modalIn.querySelector('.modal-title').textContent === 'You caught something!'
+                && viewMain.currentPage() === 'fishing'
+            ) {
+                modalIn.querySelector('.modal-button').click();
             }
         }),
         observe: () => docBody.observer.observe(
