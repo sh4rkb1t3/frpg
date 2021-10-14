@@ -16,20 +16,15 @@ const frpg = (function() {
 
     const fishInWater = {
         observer: new MutationObserver((mutationsList) => {
-            const firstMutation = mutationsList.find((mutation) => {
-                const el = mutation.target;
-
-                return el.style.opacity === '1' && mutation.oldValue === 'display: inline;';
-            });
+            const firstMutation = mutationsList.find((mutation) => mutation.target.style.opacity === '1' && mutation.oldValue === 'display: inline;');
 
             if(firstMutation) {
                 const streak = toInteger(document.querySelector('.col-60 strong').textContent);
+                const fishCaught = document.querySelector('.fishcaught');
 
-                if(streak < 500) {
-                    return document.querySelector('.fishcaught').click();
-                }
+                if(streak > 500) return firstMutation.target.click();
 
-                firstMutation.target.click();
+                fishCaught.click();
             }
         }),
         nodeTarget: () => document.getElementById('fishinwater'),
