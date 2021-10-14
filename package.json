@@ -1,0 +1,26 @@
+{
+  "name": "frpg",
+  "version": "1.0.0",
+  "description": "frpg",
+  "scripts": {
+    "dev": "npm run development",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "prod": "npm run production",
+    "production": "mix --production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sh4rkb1t3/frpg.git"
+  },
+  "author": "sh4rkb1t3",
+  "license": "MIT",
+  "devDependencies": {
+    "laravel-mix": "^6.0.34"
+  },
+  "engines": {
+      "node": ">=14"
+  }
+}
