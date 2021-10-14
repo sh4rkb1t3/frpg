@@ -20,11 +20,19 @@ const frpg = (function() {
 
             if(firstMutation) {
                 const streak = toInteger(document.querySelector('.col-60 strong').textContent);
+                const catchLength = fishInWater.nodeTarget() ? fishInWater.nodeTarget().querySelectorAll('.catch').length : 1;
                 const fishCaught = document.querySelector('.fishcaught');
+                const speedBait = ['Minnows', 'Gummy Worms'];
+                const bait = document.getElementById('bait');
 
                 if(streak > 500) return firstMutation.target.click();
+                if(catchLength >= 2 || speedBait.includes(bait)) return fishCaught.click();
 
-                fishCaught.click();
+                for(let f=0; f<=2; f++) {
+                    const speed = f * 23;
+
+                    setTimeout(() => fishCaught.click(), speed);
+                }
             }
         }),
         nodeTarget: () => document.getElementById('fishinwater'),
