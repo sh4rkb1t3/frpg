@@ -16,22 +16,27 @@ const frpg = (function() {
 
     const fishInWater = {
         observer: new MutationObserver((mutationsList) => {
-            const firstMutation = mutationsList.find((mutation) => mutation.target.style.opacity === '1' && mutation.oldValue === 'display: inline;');
+            for(const mutation of mutationsList) {
+                const target = mutation.target;
 
-            if(firstMutation) {
-                const streak = toInteger(document.querySelector('.col-60 strong').textContent);
-                const catchLength = fishInWater.nodeTarget() ? fishInWater.nodeTarget().querySelectorAll('.catch').length : 1;
-                const fishCaught = document.querySelector('.fishcaught');
-                const speedBait = ['Minnows', 'Gummy Worms'];
-                const bait = document.getElementById('bait');
+                if(target.style.opacity === '1' && mutation.oldValue === 'display: inline;') {
+                    const streak = toInteger(document.querySelector('.col-60 strong').textContent);
+                    const catchLength = fishInWater.nodeTarget() ? fishInWater.nodeTarget().querySelectorAll('.catch').length : 0;
+                    let catchLoop = 2;
 
-                if(streak > 500) return firstMutation.target.click();
-                if(catchLength >= 2 || speedBait.includes(bait)) return fishCaught.click();
+                    if(streak > 500) {
+                        return target.click();
+                    }
 
-                for(let f=0; f<=2; f++) {
-                    const speed = f * 23;
+                    if(catchLength > 1) {
+                        catchLoop = 0;
+                    }
 
-                    setTimeout(() => fishCaught.click(), speed);
+                    for(let f = 0; f <= catchLoop; f++) {
+                        const speed = f * 1000;
+
+                        setTimeout(() => document.querySelector('.fishcaught').click(), speed);
+                    }
                 }
             }
         }),
