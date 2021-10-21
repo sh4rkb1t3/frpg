@@ -1,7 +1,7 @@
 import fishing from './fishing';
 import explore from './explore';
 
-const target = document.querySelector('.view.view-main');
+const target = () => document.querySelector('.view.view-main');
 
 const config = {
     attibutes: true,
@@ -9,7 +9,7 @@ const config = {
 };
 
 const callback = () => {
-    const { page } = target.dataset;
+    const { page } = target().dataset;
 
     if(page === 'fishing') {
         return fishing.init();
@@ -25,7 +25,7 @@ const callback = () => {
 
 const observer = new MutationObserver(callback);
 
-const observe = () => observer.observe(target, config);
+const observe = () => observer.observe(target(), config);
 // const disconnect = () => observer.disconnect();
 
 const init = () => {
