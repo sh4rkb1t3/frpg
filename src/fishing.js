@@ -1,17 +1,20 @@
 import { toInteger } from './helpers';
 
-let initBait = 0;
+let pageInit = false;
+const goFishingId = 'go-fishing';
 const target = () => document.getElementById('baitarea');
-const goFishing = () => document.getElementById('goFishing');
+const goFishing = () => document.getElementById(goFishingId);
 
 const getRemainingBait = () => toInteger(document.querySelector('.col-40 strong').textContent);
+
+const reloadBait = () => $('#baitarea').load('worker.php?go=baitarea&id='+ zone_id, () => {});
 
 const chargebait = () => $.ajax({
     url: 'worker.php?go=chargebait',
     method: 'POST'
 }).done(function() {
     attcatch = 0;
-    mainView.router.refreshPage();
+    reloadBait();
 });
 
 const caughtFish = () => {
@@ -43,7 +46,7 @@ const caughtFish = () => {
 
         // need to reload buttons
         // reloadBait
-        $('#baitarea').load('worker.php?go=baitarea&id='+ zone_id, () => {});
+        reloadBait();
         // fishcount
         $('#fishcount').load('worker.php?go=fishcount', () => {});
         // getProgress
@@ -58,12 +61,13 @@ const caughtFish = () => {
 
 const createFishingElement = () => {
     const parentEl = document.querySelector(".page[data-page='fishing'] .content-block");
+    const currentEl = goFishing();
 
-    if(getRemainingBait() < 1 || !parentEl) return;
+    if(getRemainingBait() < 1 || !parentEl || currentEl) return;
 
     const el = document.createElement('div');
 
-    el.id = 'goFishing';
+    el.id = goFishingId;
     el.classList.add('card');
     el.innerHTML = `
         <div class='card-content'>
@@ -74,7 +78,7 @@ const createFishingElement = () => {
                             <a href="#" class="item-link">
                                 <div class="item-content">
                                     <div class="item-inner">
-                                        <div class="item-title">Go fishing!</div>
+                                        <div class="item-title">Go Fishing!</div>
                                     </div>
                                 </div>
                             </a>
@@ -85,11 +89,16 @@ const createFishingElement = () => {
         </div>`;
     el.addEventListener('click', goFishingListener);
 
-    parentEl.insertBefore(el, parentEl.childNodes[12]);
+    parentEl.insertBefore(el, parentEl.childNodes[7]);
 }
 
 const goFishingListener = (e) => {
     e.preventDefault();
+
+    if(pageInit) {
+        pageInit = false;
+    }
+
     document.querySelector('.fishcaught').click();
 };
 
@@ -101,11 +110,11 @@ const callback = () => {
     const bait = getRemainingBait();
     const streak = toInteger(document.querySelector('.col-60 strong').textContent);
 
-    if(initBait == bait) return;
+    if(pageInit) return;
 
     if(bait < 1) return mainView.router.refreshPage();
 
-    if(streak >= 1000) return chargebait();
+    if(streak >= 3000) return chargebait();
 
     caughtFish();
 };
@@ -113,7 +122,7 @@ const callback = () => {
 const observer = new MutationObserver(callback);
 
 const init = () => {
-    initBait = getRemainingBait();
+    pageInit = true;
     createFishingElement();
     observer.observe(target(), config);
 }
